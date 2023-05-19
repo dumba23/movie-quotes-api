@@ -15,5 +15,5 @@ use App\Http\Controllers\Auth\VerifyController;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register'])->name('store.register');
-Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('check.verify');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('verify');
