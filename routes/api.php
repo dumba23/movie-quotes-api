@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\VerifyController;
@@ -16,4 +17,9 @@ use App\Http\Controllers\Auth\VerifyController;
 */
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
-Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('verify');
+Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('verify.register');
+
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('auth/google/callback', [GoogleAuthController::class, 'handleProviderCallback'])->name('google.callback');
