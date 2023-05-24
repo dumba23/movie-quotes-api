@@ -14,7 +14,7 @@
                 <p>Hola {{ $user->username }}!</p>
                 <p>Thanks for joining Movie quotes! We really appreciate it. Please click the button below to verify your account:</p>
                 <a 
-                href=" {{ route('verify.register', $user->email_verify_token) }}"
+                href="{{  'http://localhost:5173?token=' . $token }}"
                 style=
                 "background-color: #E31221;  display:block; 
                 width: 128px;height:18px; padding-top:8px; padding-bottom:10px;
