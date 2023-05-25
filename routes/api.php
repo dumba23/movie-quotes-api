@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\VerifyController;
+use App\Http\Controllers\Auth\RecoveryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'handleProviderCallback'])->name('google.callback');
+
+Route::post('/recovery', [RecoveryController::class, 'recover'])->name('check.recovery');
+Route::patch('/recovery/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
