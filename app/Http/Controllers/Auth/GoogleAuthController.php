@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -17,23 +17,37 @@ class GoogleAuthController extends Controller
 		return Socialite::driver('google')->stateless()->redirect();
 	}
 
-	public function handleProviderCallback(): JsonResponse
+	public function handleProviderCallback(): RedirectResponse
 	{
 		$googleUser = Socialite::driver('google')->stateless()->user();
 		$matchedUser = User::where('email', $googleUser->email)->first();
 
 		if (!$matchedUser) {
-			$createdUser = User::create([
-				'username'              => $googleUser->name,
-				'email'                 => $googleUser->email,
-				'password'              => Str::random(7),
-				'email_verify_token'    => null,
-				'email_verified_at'     => Carbon::now(),
-			]);
+			$usernameTaken = User::where('username', $googleUser->name)->first();
+
+			if ($usernameTaken) {
+				$createdUser = User::create([
+					'username'              => $googleUser->name . $googleUser->id,
+					'google_id'             => $googleUser->id,
+					'email'                 => $googleUser->email,
+					'password'              => Str::random(7),
+					'email_verify_token'    => null,
+					'email_verified_at'     => Carbon::now(),
+				]);
+			} else {
+				$createdUser = User::create([
+					'username'              => $googleUser->name,
+					'google_id'             => $googleUser->id,
+					'email'                 => $googleUser->email,
+					'password'              => Str::random(7),
+					'email_verify_token'    => null,
+					'email_verified_at'     => Carbon::now(),
+				]);
+			}
 			Auth::login($createdUser);
-			return response()->json(['logged_in' => true], 200);
+			return redirect('http://localhost:5173');
 		}
 		Auth::login($matchedUser);
-		return response()->json(['logged_in' => true], 200);
+		return redirect('http://localhost:5173');
 	}
 }
