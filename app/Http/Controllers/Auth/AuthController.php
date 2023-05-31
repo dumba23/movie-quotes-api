@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Mail\MailConfirm;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -43,12 +44,13 @@ class AuthController extends Controller
 			], 401);
 		}
 
-		if (!auth()->attempt($request->only($login_type, 'password'), $remember)) {
+		if (!Auth::attempt($request->only($login_type, 'password'), $remember)) {
 			return response()->json([
 				'status'  => false,
 				'message' => 'Provided credentials does not match with our record.',
 			], 401);
 		}
+		request()->session()->regenerate();
 
 		return response()->json([
 			'status'  => true,

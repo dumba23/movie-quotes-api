@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 
 class VerifyController extends Controller
 {
-	public function verify(string $token): JsonResponse
+	public function verify(string $token): JsonResponse | RedirectResponse
 	{
 		$user = User::where('email_verify_token', $token)->first();
 
@@ -22,6 +23,6 @@ class VerifyController extends Controller
 			'email_verify_token' => '',
 		]);
 
-		return response()->json(['Success' => true], 202);
+		return redirect('http://localhost:5173/?verified=true');
 	}
 }
