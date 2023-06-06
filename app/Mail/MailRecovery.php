@@ -16,7 +16,7 @@ class MailRecovery extends Mailable
 	/**
 	 * Create a new message instance.
 	 */
-	public function __construct(public $token)
+	public function __construct(public $token, public $user)
 	{
 	}
 
