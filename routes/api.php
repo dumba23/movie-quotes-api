@@ -21,5 +21,8 @@ Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->nam
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::post('/recovery', [RecoveryController::class, 'recover'])->name('check.recovery');
-Route::patch('/recovery/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
+Route::prefix('/recovery')->group(function () {
+	Route::post('/', [RecoveryController::class, 'recover'])->name('check.recovery');
+	Route::get('/validate', [RecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
+	Route::patch('/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
+});

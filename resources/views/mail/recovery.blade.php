@@ -13,24 +13,24 @@
             <div style="margin-bottom:40px; color: #ffffff;">
                 <p>Hola {{ $user->username }}!</p>
                 <p>Thanks for joining Movie quotes! We really appreciate it. Please click the button below to verify your account:</p>
-                <a 
-                href="{{  'http://localhost:5173/?token=' . $token }}"
+                <a
+                href="{{ config('app.frontend_url') . '/?reset_password=true&token=' . $token }}"
                 style=
-                "background-color: #E31221;  display:block; 
+                "background-color: #E31221;  display:block;
                 width: 128px;height:18px; padding-top:8px; padding-bottom:10px;
-                border-radius:4px; color: #fff; 
-                font-weight:400; margin-top: 32px; text-decoration: none; 
+                border-radius:4px; color: #fff;
+                font-weight:400; margin-top: 32px; text-decoration: none;
                 text-align:center; font-size: 16px; outline: none;">
                     Verify account
                 </a>
                 <p>If clicking doesn't work, you can try copying and pasting it to your browser:</p>
                 <div style="max-width:1200px;">
-                    <p style="word-break: break-all; color: #DDCCAA;">{{ 'http://localhost:5173/?token=' . $token }}</p>
+                    <p style="word-break: break-all; color: #DDCCAA;">{{ config('app.frontend_url') . '/?reset_password=true&token=' . $token }}</p>
                 </div>
                 <p>If you have any problems, please contact us: support@moviequotes.ge</p>
                 <p>MovieQuotes Crew</p>
             </div>
-            
+
         </div>
     </body>
 </html>
