@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 
 class VerifyController extends Controller
 {
@@ -23,6 +24,6 @@ class VerifyController extends Controller
 			'email_verify_token' => '',
 		]);
 
-		return redirect('http://localhost:5173/?verified=true');
+		return redirect(Config::get('app.frontend_url' . '/?verified=true'));
 	}
 }

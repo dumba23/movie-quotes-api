@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -45,9 +46,9 @@ class GoogleAuthController extends Controller
 				]);
 			}
 			Auth::login($createdUser);
-			return redirect('http://localhost:5173');
+			return redirect(Config::get('app.frontend_url'));
 		}
 		Auth::login($matchedUser);
-		return redirect('http://localhost:5173');
+		return redirect(Config::get('app.frontend_url'));
 	}
 }
