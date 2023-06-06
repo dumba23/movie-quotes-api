@@ -25,7 +25,7 @@
                 </a>
                 <p>If clicking doesn't work, you can try copying and pasting it to your browser:</p>
                 <div style="max-width:1200px;">
-                    <p style="word-break: break-all; color: #DDCCAA;">{{ 'http://localhost:5173/?token=' . $user->email_verify_token }}</p>
+                    <p style="word-break: break-all; color: #DDCCAA;">{{ config('app.frontend_url') . '/?token=' . $user->email_verify_token }}</p>
                 </div>
                 <p>If you have any problems, please contact us: support@moviequotes.ge</p>
                 <p>MovieQuotes Crew</p>
