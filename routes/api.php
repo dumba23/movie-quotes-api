@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\VerifyController;
@@ -25,4 +26,10 @@ Route::prefix('/recovery')->group(function () {
 	Route::post('/', [RecoveryController::class, 'recover'])->name('check.recovery');
 	Route::get('/validate', [RecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
 	Route::patch('/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+	Route::get('/user', [ProfileController::class, 'getUser'])->name('user');
+	Route::put('/user/edit', [ProfileController::class, 'editUser'])->name('update.user');
+    Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
 });

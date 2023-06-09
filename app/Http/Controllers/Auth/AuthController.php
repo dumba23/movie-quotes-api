@@ -20,6 +20,7 @@ class AuthController extends Controller
 
 		$user = User::create($request->validated() + [
 			'email_verify_token' => $email_verify_token,
+			'avatar'             => 'avatars/' . fake()->image('storage/public/avatars', 200, 200, null, false),
 		]);
 
 		Mail::to($user->email)->send(new MailConfirm($user));
