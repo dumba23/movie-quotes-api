@@ -31,7 +31,7 @@ class GoogleAuthController extends Controller
 					'username'              => $googleUser->name . $googleUser->id,
 					'google_id'             => $googleUser->id,
 					'email'                 => $googleUser->email,
-					'avatar'                => 'avatars/' . fake()->image('storage/public/avatars', 200, 200, null, false),
+                    'avatar'                => env('APP_URL') . '/images/' . basename(public_path('/images/avatar.png')),
 					'password'              => Str::random(7),
 					'email_verify_token'    => null,
 					'email_verified_at'     => Carbon::now(),
@@ -41,16 +41,21 @@ class GoogleAuthController extends Controller
 					'username'              => $googleUser->name,
 					'google_id'             => $googleUser->id,
 					'email'                 => $googleUser->email,
-					'avatar'                => 'avatars/' .  fake()->image('storage/public/avatars', 200, 200, null, false),
+                    'avatar'                => env('APP_URL') . '/images/' . basename(public_path('images/avatar.png')),
 					'password'              => Str::random(7),
 					'email_verify_token'    => null,
 					'email_verified_at'     => Carbon::now(),
 				]);
 			}
-			Auth::login($createdUser);
-			return redirect(Config::get('app.frontend_url'));
+            Auth::login($createdUser);
+            request()->session()->regenerate();
+
+            return redirect(Config::get('app.frontend_url') . '/profile');
 		}
+
 		Auth::login($matchedUser);
-		return redirect(Config::get('app.frontend_url'));
+        request()->session()->regenerate();
+
+        return redirect(Config::get('app.frontend_url') . '/profile');
 	}
 }
