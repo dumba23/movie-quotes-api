@@ -14,7 +14,7 @@
         <p>Hola {{ $user->username }}!</p>
         <p>Thanks for joining Movie quotes! We really appreciate it. Please click the button below to verify your new email:</p>
         <a
-            href=" {{ route('verify.register', $decryptedEmail) }}"
+            href=" {{ route('verify.register', $encryptedEmail) }}"
             style=
                 "background-color: #E31221;  display:block;
                 width: 128px;height:18px; padding-top:8px; padding-bottom:10px;
@@ -25,7 +25,7 @@
         </a>
         <p>If clicking doesn't work, you can try copying and pasting it to your browser:</p>
         <div style="max-width:1200px;">
-            <p style="word-break: break-all; color: #DDCCAA;">{{ config('app.frontend_url') . '/?mail=' . $decryptedEmail }}</p>
+            <p style="word-break: break-all; color: #DDCCAA;">{{ config('app.frontend_url') . '/?mail=' . $encryptedEmail }}</p>
         </div>
         <p>If you have any problems, please contact us: support@moviequotes.ge</p>
         <p>MovieQuotes Crew</p>

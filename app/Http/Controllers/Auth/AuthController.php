@@ -19,13 +19,15 @@ class AuthController extends Controller
 		$email_verify_token = Str::random(30);
 
 		$user = User::create($request->validated() + [
-			'email_verify_token' => $email_verify_token,
-			'avatar'             => 'avatars/' . fake()->image('storage/public/avatars', 200, 200, null, false),
+                'avatar'             => env('APP_URL') . 'images/' . basename(public_path('images/avatar.png')),
+                'email_verify_token' => $email_verify_token,
 		]);
+
+        $user->save();
 
 		Mail::to($user->email)->send(new MailConfirm($user));
 
-		return response()->json(['success' => true, 'token' => $email_verify_token], 201);
+		return response()->json(['success' => true, 'token' => $email_verify_token ], 201);
 	}
 
 	public function login(LoginRequest $request): JsonResponse
@@ -58,4 +60,14 @@ class AuthController extends Controller
 			'message' => 'User Logged In Successfully',
 		], 200);
 	}
+
+    public function logout(): JsonResponse
+    {
+        Auth::guard('web')->logout();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User Logged Out Successfully',
+        ], 200);
+    }
 }

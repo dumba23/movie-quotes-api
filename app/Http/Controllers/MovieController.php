@@ -7,46 +7,54 @@ use App\Http\Requests\UpdateMovieRequest;
 use App\Http\Resources\MovieResource;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
+use App\Services\MovieService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MovieController extends Controller
 {
-	public function index(): JsonResponse
+	protected MovieService $movieService;
+
+	public function __construct(MovieService $movieService)
 	{
-		return response()->json(MovieResource::collection(auth()->user()->movies));
+		$this->movieService = $movieService;
 	}
 
-	public function get(Movie $movie): JsonResponse
-	{
-		return response()->json(MovieResource::make($movie));
-	}
-
-	public function store(StoreMovieRequest $request): JsonResponse
-	{
-        $movie = DB::transaction(fn () => tap(
-            Movie::create(
-                $request->validated() +
-                [
-                'image' => '/storage/' . $request->file('image')->store('images'),
-                'user_id' => auth()->id(),
-            ]),
-            fn ($movie) => $movie->genres()->attach($request->input('genreIds'))
-        ));
-
-		return response()->json(MovieResource::make($movie));
-	}
-
-    public function destroy(Movie $movie): JsonResponse
+	public function index(): AnonymousResourceCollection
     {
-        $movie->delete();
+		return MovieResource::collection(auth()->user()->movies);
+	}
 
-        return response()->json(['message' => 'Movie deleted successfully']);
-    }
+	public function show(Movie $movie): JsonResponse
+	{
+		return response()->json(([
+			'id'           => $movie->id,
+			'title'        => $movie->getTranslations('title'),
+			'director'     => $movie->getTranslations('director'),
+			'description'  => $movie->getTranslations('description'),
+			'image'        => $movie->image,
+			'genres'       => $movie->genres,
+			'release_date' => $movie->release_date,
+		]));
+	}
 
-    public function update(UpdateMovieRequest $request, Movie $movie): JsonResponse
+	public function store(StoreMovieRequest $request, Movie $movie): MovieResource
     {
-        $movie->update($request->validated());
+		$newMovie = $this->movieService->createMovie($request, $movie);
 
-        return response()->json(MovieResource::make($movie));
-    }
+		return MovieResource::make($newMovie);
+	}
+
+	public function destroy(string $movieId): JsonResponse
+	{
+		$this->movieService->deleteMovie($movieId);
+
+		return response()->json(['message' => 'Movie deleted successfully']);
+	}
+
+	public function update(UpdateMovieRequest $request, Movie $movie): MovieResource
+	{
+		$updatedMovie = $this->movieService->updateMovie($request, $movie);
+
+		return MovieResource::make($updatedMovie);
+	}
 }

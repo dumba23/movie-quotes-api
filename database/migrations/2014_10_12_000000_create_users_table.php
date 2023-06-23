@@ -12,7 +12,7 @@ return new class() extends Migration {
 	{
 		Schema::create('users', function (Blueprint $table) {
 			$table->id();
-			$table->integer('google_id')->nullable();
+			$table->string('google_id', 255)->nullable();
 			$table->string('username')->unique();
 			$table->string('email')->unique();
 			$table->string('email_verify_token')->nullable();
