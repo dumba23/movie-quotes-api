@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\GenreController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -29,7 +31,13 @@ Route::prefix('/recovery')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+	Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
 	Route::get('/user', [ProfileController::class, 'getUser'])->name('user');
-	Route::put('/user/edit', [ProfileController::class, 'editUser'])->name('update.user');
-    Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
+	Route::post('/user/edit', [ProfileController::class, 'editUser'])->name('update.user');
+	Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
+
+	Route::resource('movies', MovieController::class);
+
+	Route::get('/genres', [GenreController::class, 'getGenres'])->name('genres');
 });
