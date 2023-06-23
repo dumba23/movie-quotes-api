@@ -17,32 +17,43 @@ class ProfileController extends Controller
 {
 	public function getUser(): JsonResponse
 	{
-		return response()->json(Auth::user());
+		return response()->json([Auth::user()]);
 	}
 
 	public function editUser(EditUserRequest $request): JsonResponse
 	{
-		$user = User::where('email', $request->email)->first();
+		$user = User::where('email', $request->old_email)->first();
 
-		if (isset($request->avatar)) {
-			Storage::delete($user->avatar);
-		}
+		if (isset($request->email)) {
+            if ($request->email === $request->old_email) {
+                $user->update([
+                    'username' => $request->validated('username'),
+                    'email' => $request->validated('email'),
+                    'password' => $request->validated('password'),
+                ]);
+            } else {
+                $user->update([
+                    'username' => $request->validated('username'),
+                    'password' => $request->validated('password'),
+                ]);
 
-		if ($request->email === $request->old_email) {
-			$user->update([
-				$user->username = $request->validated('username'),
-				$user->email = $request->validated('email'),
-				$user->password = $request->validated('password'),
-			]);
-		} else {
-			Mail::to($user->email)->send(new MailChange($user, Crypt::decryptString($user->email)));
+                $encryptedEmail = Crypt::encryptString($user->email);
+                Mail::to($user->email)->send(new MailChange($user, $encryptedEmail));
+            }
+        }
 
-			$user->update([
-				$user->username => $request->validated('username'),
-				$user->password => $request->validated('password'),
-			]);
-		}
-		return response()->json([$request->validated(), 'User updated successfully', $user->username]);
+        if ($request->file('avatar')) {
+            Storage::delete($user->avatar);
+            $validatedData = $request->validated();
+            unset($validatedData['avatar']);
+            $user->update($validatedData + [
+                    'avatar' => $request->file('avatar')->store('avatars')
+                ]);
+        } else {
+            $user->update($request->validated());
+        }
+
+		return response()->json('User updated successfully');
 	}
 
 	public function changeEmail(string $oldEmail, string $decryptedEmail): RedirectResponse | JsonResponse
@@ -54,7 +65,7 @@ class ProfileController extends Controller
 		}
 
 		$user->update([
-			'email' => Crypt::encryptString($decryptedEmail),
+			'email' => Crypt::decryptString($decryptedEmail),
 		]);
 
 		return redirect(Config::get('app.frontend_url' . '/?verified=true'));
