@@ -14,12 +14,16 @@ class UpdateMovieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'release_date' => 'required|date',
-            'description' => 'required|string',
-            'director' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'title_ka' => 'required|string|max:255',
+            'release_date' => 'required|numeric',
+            'description_en' => 'required|string',
+            'description_ka' => 'required|string',
+            'director_en' => 'required|string|max:255',
+            'director_ka' => 'required|string|max:255',
             'genreIds' => 'required|array',
             'genreIds.*' => 'exists:genres,id',
+            'image' => 'sometimes|image',
         ];
     }
 }
