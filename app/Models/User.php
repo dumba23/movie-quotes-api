@@ -25,6 +25,8 @@ class User extends Authenticatable
 		'username',
 		'email',
 		'password',
+        'avatar',
+        'google_id',
 		'email_verify_token',
 		'email_verified_at',
 	];
@@ -56,6 +58,6 @@ class User extends Authenticatable
 
 	public function movies()
 	{
-		$this->hasMany(Movie::class);
+		return $this->hasMany(Movie::class);
 	}
 }
