@@ -3,6 +3,7 @@
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\VerifyController;
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
 
 	Route::resource('movies', MovieController::class);
+    Route::resource('quotes', QuoteController::class);
 
 	Route::get('/genres', [GenreController::class, 'getGenres'])->name('genres');
 });

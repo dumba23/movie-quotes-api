@@ -34,6 +34,7 @@ class MovieController extends Controller
 			'image'        => $movie->image,
 			'genres'       => $movie->genres,
 			'release_date' => $movie->release_date,
+            'quotes'       => $movie->quotes,
 		]));
 	}
 
