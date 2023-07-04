@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -25,8 +26,8 @@ class User extends Authenticatable
 		'username',
 		'email',
 		'password',
-        'avatar',
-        'google_id',
+		'avatar',
+		'google_id',
 		'email_verify_token',
 		'email_verified_at',
 	];
@@ -51,12 +52,17 @@ class User extends Authenticatable
 		'password'          => 'hashed',
 	];
 
+	public function notifications(): HasMany
+	{
+		return $this->hasMany(Notification::class, 'user_id');
+	}
+
 	public function setPasswordAttribute($value)
 	{
 		$this->attributes['password'] = bcrypt($value);
 	}
 
-	public function movies()
+	public function movies(): HasMany
 	{
 		return $this->hasMany(Movie::class);
 	}
