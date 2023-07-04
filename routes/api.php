@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +41,18 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
 
 	Route::resource('movies', MovieController::class);
-    Route::resource('quotes', QuoteController::class);
+
+	Route::get('all/quotes', [QuoteController::class, 'allQuotes'])->name('all_quotes');
+	Route::resource('quotes', QuoteController::class);
+	Route::post('quotes/{quote}/like', [QuoteController::class, 'like'])->name('like_quote');
+
+	Route::post('quotes/{quote}/comments', [CommentController::class, 'store'])->name('store.quote_comment');
+
+	Route::get('notification', [NotificationController::class, 'getNotifications'])->name('get_notification');
+	Route::post('notification', [NotificationController::class, 'store'])->name('store.notification');
+
+	Route::patch('notifications/{notificationId}', [NotificationController::class, 'markAsRead'])->name('mark_read');
+	Route::patch('notification/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark_all_read');
 
 	Route::get('/genres', [GenreController::class, 'getGenres'])->name('genres');
 });
