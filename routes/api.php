@@ -6,6 +6,7 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\VerifyController;
@@ -22,37 +23,49 @@ use App\Http\Controllers\Auth\RecoveryController;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register'])->name('register');
-Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('verify.register');
+Route::middleware('localization')->group(function () {
+	Route::get('/language/{locale}', function ($locale) {
+		App::setLocale($locale);
 
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+		return response()->json(['Language changed', app()->getLocale()]);
+	});
+	Route::post('/register', [AuthController::class, 'register'])->name('register');
+	Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('verify.register');
 
-Route::prefix('/recovery')->group(function () {
-	Route::post('/', [RecoveryController::class, 'recover'])->name('check.recovery');
-	Route::get('/validate', [RecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
-	Route::patch('/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
-});
+	Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->group(function () {
-	Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+	Route::prefix('/recovery')->group(function () {
+		Route::post('/', [RecoveryController::class, 'recover'])->name('check.recovery');
+		Route::get('/validate', [RecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
+		Route::patch('/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
+	});
 
-	Route::get('/user', [ProfileController::class, 'getUser'])->name('user');
-	Route::post('/user/edit', [ProfileController::class, 'editUser'])->name('update.user');
-	Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
+	Route::middleware('auth:sanctum')->group(function () {
+		Route::get('/auth/check', function () {
+			return response()->json(['authenticated' => true, \Illuminate\Support\Facades\App::getLocale()]);
+		});
 
-	Route::resource('movies', MovieController::class);
+		Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-	Route::get('all/quotes', [QuoteController::class, 'allQuotes'])->name('all_quotes');
-	Route::resource('quotes', QuoteController::class);
-	Route::post('quotes/{quote}/like', [QuoteController::class, 'like'])->name('like_quote');
+		Route::get('/user', [ProfileController::class, 'getUser'])->name('user');
+		Route::post('/user/edit', [ProfileController::class, 'editUser'])->name('update.user');
+		Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
 
-	Route::post('quotes/{quote}/comments', [CommentController::class, 'store'])->name('store.quote_comment');
+		Route::resource('movies', MovieController::class);
+		Route::get('all/movies', [MovieController::class, 'allMovies'])->name('all_movies');
 
-	Route::get('notification', [NotificationController::class, 'getNotifications'])->name('get_notification');
-	Route::post('notification', [NotificationController::class, 'store'])->name('store.notification');
+		Route::get('all/quotes', [QuoteController::class, 'allQuotes'])->name('all_quotes');
+		Route::resource('quotes', QuoteController::class);
+		Route::post('quotes/{quote}/like', [QuoteController::class, 'like'])->name('like_quote');
 
-	Route::patch('notifications/{notificationId}', [NotificationController::class, 'markAsRead'])->name('mark_read');
-	Route::patch('notification/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark_all_read');
+		Route::post('quotes/{quote}/comments', [CommentController::class, 'store'])->name('store.quote_comment');
 
-	Route::get('/genres', [GenreController::class, 'getGenres'])->name('genres');
+		Route::get('notification', [NotificationController::class, 'getNotifications'])->name('get_notification');
+		Route::post('notification', [NotificationController::class, 'store'])->name('store.notification');
+
+		Route::patch('notification/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark_all_read');
+		Route::put('/notifications/mark-selected-as-read', [NotificationController::class, 'markSelectedAsRead']);
+
+		Route::get('/genres', [GenreController::class, 'getGenres'])->name('genres');
+	});
 });

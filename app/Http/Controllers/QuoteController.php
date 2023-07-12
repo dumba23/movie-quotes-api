@@ -9,34 +9,35 @@ use App\Http\Resources\QuoteResource;
 use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class QuoteController extends Controller
 {
-	public function allQuotes(): JsonResponse
+	public function allQuotes(): AnonymousResourceCollection
 	{
 		$quotes = Quote::with('movie.user')->orderBy('created_at', 'desc')->get();
 
-		return response()->json(QuoteResource::collection($quotes));
+		return QuoteResource::collection($quotes);
 	}
 
-	public function index(): JsonResponse
+	public function index(): AnonymousResourceCollection
 	{
 		$userId = Auth::id();
 		$quotes = Quote::whereIn('movie_id', function ($query) use ($userId) {
 			$query->select('id')->from('movies')->where('user_id', $userId);
 		})->orderBy('created_at', 'desc')->get();
 
-		return response()->json(QuoteResource::collection($quotes));
+		return QuoteResource::collection($quotes);
 	}
 
-	public function show(Quote $quote): JsonResponse
+	public function show(Quote $quote): QuoteResource
 	{
-		return response()->json(QuoteResource::make($quote));
+		return QuoteResource::make($quote);
 	}
 
-	public function store(StoreQuoteRequest $request, Quote $quote): JsonResponse
+	public function store(StoreQuoteRequest $request, Quote $quote): QuoteResource
 	{
 		$quote->image = env('APP_URL') . '/storage/' . $request->file('image')->store('images');
 		$quote->movie_id = $request->movie_id;
@@ -47,10 +48,10 @@ class QuoteController extends Controller
 
 		$quote->save();
 
-		return response()->json(QuoteResource::make($quote));
+		return QuoteResource::make($quote);
 	}
 
-	public function update(UpdateQuoteRequest $request, Quote $quote): JsonResponse
+	public function update(UpdateQuoteRequest $request, Quote $quote): QuoteResource
 	{
 		if ($request->hasFile('image')) {
 			Storage::delete($quote->image);
@@ -65,7 +66,7 @@ class QuoteController extends Controller
 
 		$quote->save();
 
-		return response()->json(QuoteResource::make($quote));
+		return QuoteResource::make($quote);
 	}
 
 	public function destroy(Quote $quote): JsonResponse

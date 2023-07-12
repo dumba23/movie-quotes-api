@@ -16,12 +16,13 @@ class MovieResource extends JsonResource
 	{
 		return [
 			'id'           => $this->id,
-			'title'        => $this->title,
+			'title'        => $this->getTranslations('title'),
+			'director'     => $this->getTranslations('director'),
+			'description'  => $this->getTranslations('description'),
 			'release_date' => $this->release_date,
 			'genre'        => $this->whenLoaded('genres', GenreResource::collection($this->genres)),
-			'description'  => $this->description,
-			'director'     => $this->director,
 			'image'        => $this->image,
+			'quotes'       => $this->quotes->load(['comments', 'likes']),
 		];
 	}
 }
