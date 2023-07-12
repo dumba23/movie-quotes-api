@@ -19,10 +19,10 @@ class StoreMovieRequest extends FormRequest
             'release_date' => 'required|string',
             'genreIds' => 'required|array',
             'genreIds.*' => 'exists:genres,id',
-            'description_en' => 'nullable|string',
-            'description_ka' => 'nullable|string',
-            'director_en' => 'nullable|string|max:255',
-            'director_ka' => 'nullable|string|max:255',
+            'description_en' => 'required|string',
+            'description_ka' => 'required|string',
+            'director_en' => 'required|string|max:255',
+            'director_ka' => 'required|string|max:255',
             'image' => 'required|image',
         ];
     }
