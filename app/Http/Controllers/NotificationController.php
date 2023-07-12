@@ -8,32 +8,47 @@ use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-	public function getNotifications(Notification $notification): JsonResponse
-	{
-		$notifications = $notification::with('sender')
-			->where('user_id', Auth::user()->id)
-			->orderBy('created_at', 'desc')
-			->get();
+    public function getNotifications(Request $request, Notification $notification): JsonResponse
+    {
+        $perPage = $request->input('per_page', 5);
+        $currentPage = $request->input('page', 1);
 
-		return response()->json($notifications);
-	}
+        $query = $notification::with('sender')
+            ->where('user_id', Auth::user()->id)
+            ->orderBy('created_at', 'desc');
 
-	public function markAsRead(NotificationMarkAsReadRequest $request): JsonResponse
-	{
-		$user = Auth::user();
+        $paginator = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-		$notification = Notification::where('user_id', $user->id)
-			->where('id', $request->id)
-			->firstOrFail();
+        $paginationData = [
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+        ];
 
-		$notification->read = true;
-		$notification->save();
+        $data = [
+            'notifications' => $paginator->items(),
+            'pagination' => $paginationData,
+        ];
 
-		return response()->json(['message' => 'Notification marked as read']);
-	}
+        return response()->json($data);
+    }
+
+    public function markSelectedAsRead(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        $notificationIds = $request->input('id', []);
+
+        $user->notifications()
+            ->whereIn('id', $notificationIds)
+            ->update(['read' => true]);
+
+        return response()->json(['message' => 'Selected notifications marked as read']);
+    }
 
 	public function markAllAsRead(): JsonResponse
 	{
@@ -48,13 +63,17 @@ class NotificationController extends Controller
 	{
 		$quote = Quote::findOrFail($request->input('quote_id'));
 
-		$notification->user_id = $quote->movie->user->id;
-		$notification->quote_id = $request->input('quote_id');
-		$notification->sender_id = $request->input('sender_id');
-		$notification->type = $request->input('type');
-		$notification->message = $request->input('message');
-		$notification->save();
+        if($quote->movie->user->id === $request->input('sender_id')) {
+            return response()->json(['message' => 'Nothing to store']);
+        }
 
-		return response()->json(['message' => 'Notification saved successfully']);
-	}
+        $notification->user_id = $quote->movie->user->id;
+        $notification->quote_id = $request->input('quote_id');
+        $notification->sender_id = $request->input('sender_id');
+        $notification->type = $request->input('type');
+        $notification->message = $request->input('message');
+        $notification->save();
+
+        return response()->json(['message' => 'Notification saved successfully']);
+    }
 }

@@ -7,6 +7,7 @@ use App\Mail\MailChange;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
@@ -17,7 +18,7 @@ class ProfileController extends Controller
 {
 	public function getUser(): JsonResponse
 	{
-		return response()->json([Auth::user()]);
+		return response()->json([Auth::user(), App::getLocale()]);
 	}
 
 	public function editUser(EditUserRequest $request): JsonResponse

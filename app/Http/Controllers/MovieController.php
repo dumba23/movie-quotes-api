@@ -19,23 +19,20 @@ class MovieController extends Controller
 		$this->movieService = $movieService;
 	}
 
-	public function index(): AnonymousResourceCollection
+    public function allMovies(): AnonymousResourceCollection
+    {
+        return MovieResource::collection(Movie::all());
+    }
+
+
+    public function index(): AnonymousResourceCollection
     {
 		return MovieResource::collection(auth()->user()->movies);
 	}
 
-	public function show(Movie $movie): JsonResponse
+	public function show(Movie $movie): MovieResource
 	{
-		return response()->json(([
-			'id'           => $movie->id,
-			'title'        => $movie->getTranslations('title'),
-			'director'     => $movie->getTranslations('director'),
-			'description'  => $movie->getTranslations('description'),
-			'image'        => $movie->image,
-			'genres'       => $movie->genres,
-			'release_date' => $movie->release_date,
-            'quotes'       => $movie->quotes,
-		]));
+		return new MovieResource($movie);
 	}
 
 	public function store(StoreMovieRequest $request, Movie $movie): MovieResource

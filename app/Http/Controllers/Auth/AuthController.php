@@ -19,15 +19,15 @@ class AuthController extends Controller
 		$email_verify_token = Str::random(30);
 
 		$user = User::create($request->validated() + [
-                'avatar'             => env('APP_URL') . 'images/' . basename(public_path('images/avatar.png')),
-                'email_verify_token' => $email_verify_token,
+			'avatar'             => env('APP_URL') . 'images/' . basename(public_path('images/avatar.png')),
+			'email_verify_token' => $email_verify_token,
 		]);
 
-        $user->save();
+		$user->save();
 
 		Mail::to($user->email)->send(new MailConfirm($user));
 
-		return response()->json(['success' => true, 'token' => $email_verify_token ], 201);
+		return response()->json(['success' => true, 'token' => $email_verify_token], 201);
 	}
 
 	public function login(LoginRequest $request): JsonResponse
@@ -43,14 +43,21 @@ class AuthController extends Controller
 		if ($user && $user->email_verified_at == null) {
 			return response()->json([
 				'status'  => false,
-				'message' => 'Email is not confirmed yet',
+				'message' => [
+					'en' => 'Email is not confirmed yet',
+					'ka' => 'თქვენი ანგარიში არ არის ვერიფიცირებული',
+				],
 			], 401);
 		}
 
 		if (!Auth::attempt($request->only($login_type, 'password'), $remember)) {
 			return response()->json([
 				'status'  => false,
-				'message' => 'Provided credentials does not match with our record.',
+				'message' => [
+					'en' => 'Provided credentials does not match with our records',
+					'ka' => 'თქვენს მიერ მოწოდებული მონაცემები არ არის სწორი',
+				],
+				'locale' => app()->getLocale(),
 			], 401);
 		}
 		request()->session()->regenerate();
@@ -61,13 +68,13 @@ class AuthController extends Controller
 		], 200);
 	}
 
-    public function logout(): JsonResponse
-    {
-        Auth::guard('web')->logout();
+	public function logout(): JsonResponse
+	{
+		Auth::guard('web')->logout();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User Logged Out Successfully',
-        ], 200);
-    }
+		return response()->json([
+			'status'  => true,
+			'message' => 'User Logged Out Successfully',
+		], 200);
+	}
 }
