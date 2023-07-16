@@ -66,10 +66,10 @@
     php artisan migrate
 ```
 
-4. Fetch genres:
+4. Seed genres:
 
 ```shell
-    php artisan fetch:genres
+    php artisan db:seed --class=GenreSeeder
 ```
 
 #

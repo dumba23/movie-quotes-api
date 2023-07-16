@@ -28,7 +28,7 @@ class GoogleAuthController extends Controller
 
 			if ($usernameTaken) {
 				$createdUser = User::create([
-					'username'              => $googleUser->name . $googleUser->id,
+					'username'              => $googleUser->name . substr($googleUser->id, 4),
 					'google_id'             => $googleUser->id,
 					'email'                 => $googleUser->email,
                     'avatar'                => env('APP_URL') . '/images/' . basename(public_path('/images/avatar.png')),

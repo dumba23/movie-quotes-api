@@ -24,6 +24,6 @@ class VerifyController extends Controller
 			'email_verify_token' => '',
 		]);
 
-		return redirect(Config::get('app.frontend_url' . '/?verified=true'));
+        return redirect()->away(Config::get('app.frontend_url') . '/?verified=true');
 	}
 }
