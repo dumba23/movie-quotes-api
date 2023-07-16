@@ -10,7 +10,7 @@ class MovieService
     public function createMovie(StoreMovieRequest $request, Movie $movie): Movie
     {
         return DB::transaction(function () use ($movie, $request) {
-            $movie->image =  env('APP_URL') . '/storage/' . $request->file('image')->store('images');
+            $movie->image =  config('app.url') . '/storage/' . $request->file('image')->store('images');
             $movie->user_id = auth()->id();
             $movie->release_date = $request->release_date;
 
@@ -41,7 +41,7 @@ class MovieService
     {
         return DB::transaction(function () use ($request, $movie) {
             if($request->hasFile('image')){
-                $movie->image =  env('APP_URL') . '/storage/' . $request->file('image')->store('images');
+                $movie->image =  config('app.url') . '/storage/' . $request->file('image')->store('images');
             }
             $movie->release_date = $request->release_date;
 
