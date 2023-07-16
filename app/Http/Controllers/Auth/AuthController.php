@@ -19,7 +19,7 @@ class AuthController extends Controller
 		$email_verify_token = Str::random(30);
 
 		$user = User::create($request->validated() + [
-			'avatar'             => env('APP_URL') . 'images/' . basename(public_path('images/avatar.png')),
+			'avatar'             => env('APP_URL') . '/images/' . basename(public_path('images/avatar.png')),
 			'email_verify_token' => $email_verify_token,
 		]);
 
