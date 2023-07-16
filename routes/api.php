@@ -42,7 +42,7 @@ Route::middleware('localization')->group(function () {
 
 	Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/auth/check', function () {
-			return response()->json(['authenticated' => true, \Illuminate\Support\Facades\App::getLocale()]);
+			return response()->json(['authenticated' => true, App::getLocale()]);
 		});
 
 		Route::post('logout', [AuthController::class, 'logout'])->name('logout');
