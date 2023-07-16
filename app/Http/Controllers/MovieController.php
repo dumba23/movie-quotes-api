@@ -9,6 +9,7 @@ use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
 use App\Services\MovieService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller
 {
@@ -19,24 +20,29 @@ class MovieController extends Controller
 		$this->movieService = $movieService;
 	}
 
-    public function allMovies(): AnonymousResourceCollection
-    {
-        return MovieResource::collection(Movie::all());
-    }
+	public function allMovies(): AnonymousResourceCollection
+	{
+		return MovieResource::collection(Movie::all());
+	}
 
-
-    public function index(): AnonymousResourceCollection
-    {
+	public function index(): AnonymousResourceCollection
+	{
 		return MovieResource::collection(auth()->user()->movies);
 	}
 
-	public function show(Movie $movie): MovieResource
+	public function show(Movie $movie): MovieResource | JsonResponse
 	{
+		$user = Auth::user();
+
+		if ($movie->user_id !== $user->id) {
+			return response()->json(['Invalid request'], 403);
+		}
+
 		return new MovieResource($movie);
 	}
 
 	public function store(StoreMovieRequest $request, Movie $movie): MovieResource
-    {
+	{
 		$newMovie = $this->movieService->createMovie($request, $movie);
 
 		return MovieResource::make($newMovie);
