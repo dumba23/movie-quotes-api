@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexNotificationRequest;
+use App\Http\Requests\MarkSelectedAsReadRequest;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-	public function index(Request $request, Notification $notification): JsonResponse
+	public function index(IndexNotificationRequest $request, Notification $notification): JsonResponse
 	{
 		$perPage = $request->input('per_page', 5);
 		$currentPage = $request->input('page', 1);
@@ -38,7 +39,7 @@ class NotificationController extends Controller
 		return response()->json($data);
 	}
 
-	public function markSelectedAsRead(Request $request): JsonResponse
+	public function markSelectedAsRead(MarkSelectedAsReadRequest $request): JsonResponse
 	{
 		$user = Auth::user();
 		$notificationIds = $request->input('id', []);

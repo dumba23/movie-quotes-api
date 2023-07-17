@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewCommentEvent;
+use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-	public function store(Request $request, Quote $quote): JsonResponse
+	public function store(StoreCommentRequest $request, Quote $quote): JsonResponse
 	{
-		$comment = Comment::create([
-			'content' => $request->input('content'),
-		]);
+		$comment = Comment::create($request->validated());
 
 		$comment->user()->associate(Auth::user());
 		$comment->quote()->associate($quote);
