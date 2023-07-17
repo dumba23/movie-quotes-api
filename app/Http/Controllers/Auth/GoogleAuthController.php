@@ -13,7 +13,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
-	public function redirectToGoogle()
+	public function redirectToGoogle(): RedirectResponse
 	{
 		return Socialite::driver('google')->stateless()->redirect();
 	}
