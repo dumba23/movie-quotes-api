@@ -9,8 +9,8 @@ use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\VerifyController;
-use App\Http\Controllers\Auth\RecoveryController;
+use App\Http\Controllers\Auth\EmailVerifyController;
+use App\Http\Controllers\Auth\PasswordRecoveryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,14 +30,14 @@ Route::middleware('localization')->group(function () {
 		return response()->json(['Language changed', app()->getLocale()]);
 	});
 	Route::post('/register', [AuthController::class, 'register'])->name('register');
-	Route::get('/register/verify/{token}', [VerifyController::class, 'verify'])->name('verify.register');
+	Route::get('/register/verify/{token}', [EmailVerifyController::class, 'verify'])->name('verify.register');
 
 	Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 	Route::prefix('/recovery')->group(function () {
-		Route::post('/', [RecoveryController::class, 'recover'])->name('check.recovery');
-		Route::get('/validate', [RecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
-		Route::patch('/password/{token}', [RecoveryController::class, 'updatePassword'])->name('update.recovery');
+		Route::post('/', [PasswordRecoveryController::class, 'recover'])->name('check.recovery');
+		Route::get('/validate', [PasswordRecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
+		Route::patch('/password/{token}', [PasswordRecoveryController::class, 'updatePassword'])->name('update.recovery');
 	});
 
 	Route::middleware('auth:sanctum')->group(function () {

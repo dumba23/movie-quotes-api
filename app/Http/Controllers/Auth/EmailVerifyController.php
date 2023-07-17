@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 
-class VerifyController extends Controller
+class EmailVerifyController extends Controller
 {
 	public function verify(string $token): JsonResponse | RedirectResponse
 	{
