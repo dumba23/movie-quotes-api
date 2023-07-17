@@ -23,8 +23,6 @@ class AuthController extends Controller
 			'email_verify_token' => $email_verify_token,
 		]);
 
-		$user->save();
-
 		Mail::to($user->email)->send(new MailConfirm($user));
 
 		return response()->json(['success' => true, 'token' => $email_verify_token], 201);
