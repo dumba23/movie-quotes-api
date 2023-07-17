@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreNotificationRequest;
+use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
@@ -30,7 +31,7 @@ class NotificationController extends Controller
 		];
 
 		$data = [
-			'notifications' => $paginator->items(),
+			'notifications' => NotificationResource::collection($paginator->items()),
 			'pagination'    => $paginationData,
 		];
 
