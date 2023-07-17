@@ -40,11 +40,7 @@ class AuthController extends Controller
 
 		if ($user && $user->email_verified_at == null) {
 			return response()->json([
-				'status'  => false,
-				'message' => [
-					'en' => 'Email is not confirmed yet',
-					'ka' => 'თქვენი ანგარიში არ არის ვერიფიცირებული',
-				],
+				'message' => __('validation.email_not_confirmed'),
 			], 401);
 		}
 

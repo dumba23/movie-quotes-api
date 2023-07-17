@@ -151,6 +151,7 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
     'credentials' => 'მოწოდებული მონაცემები არასწორია, სცადეთ თავიდან',
+    'email_not_confirmed' => 'თქვენი ანგარიში არ არის ვერიფიცირებული',
 
     /*
     |--------------------------------------------------------------------------
