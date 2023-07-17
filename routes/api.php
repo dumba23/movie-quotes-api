@@ -66,6 +66,6 @@ Route::middleware('localization')->group(function () {
 		Route::patch('notification/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark_all_read');
 		Route::put('/notifications/mark-selected-as-read', [NotificationController::class, 'markSelectedAsRead']);
 
-		Route::get('/genres', [GenreController::class, 'getGenres'])->name('genres');
+		Route::get('/genres', [GenreController::class, 'index'])->name('genres');
 	});
 });

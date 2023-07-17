@@ -7,8 +7,8 @@ use Illuminate\Http\JsonResponse;
 
 class GenreController extends Controller
 {
-    public function getGenres(): JsonResponse
-    {
-        return response()->json(Genre::all());
-    }
+	public function index(): JsonResponse
+	{
+		return response()->json(Genre::all());
+	}
 }
