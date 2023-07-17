@@ -41,6 +41,6 @@ class GoogleAuthController extends Controller
 		Auth::login($createdUser);
 		request()->session()->regenerate();
 
-		return redirect(Config::get('app.frontend_url') . '/profile');
+		return redirect(env('FRONTEND_PROFILE_URL'));
 	}
 }
