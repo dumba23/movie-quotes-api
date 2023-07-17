@@ -69,9 +69,8 @@ class MovieController extends Controller
 		return MovieResource::make($updatedMovie);
 	}
 
-	public function destroy(string $movieId): JsonResponse
+	public function destroy(Movie $movie): JsonResponse
 	{
-		$movie = Movie::findOrFail($movieId);
 		$movie->delete();
 
 		return response()->json(['message' => 'Movie deleted successfully']);
