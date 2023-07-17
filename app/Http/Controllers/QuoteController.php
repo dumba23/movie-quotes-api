@@ -37,34 +37,26 @@ class QuoteController extends Controller
 		return QuoteResource::make($quote);
 	}
 
-	public function store(StoreQuoteRequest $request, Quote $quote): QuoteResource
+	public function store(StoreQuoteRequest $request): QuoteResource
 	{
-		$quote->image = config('app.url') . '/storage/' . $request->file('image')->store('images');
-		$quote->movie_id = $request->movie_id;
-		$quote->setTranslations('title', [
-			'en' => $request->title_en,
-			'ka' => $request->title_ka,
+		$quote = Quote::create($request->validated() + [
+			'image' => config('app.url') . '/storage/' . $request->file('image')->store('images'),
 		]);
-
-		$quote->save();
 
 		return QuoteResource::make($quote);
 	}
 
 	public function update(UpdateQuoteRequest $request, Quote $quote): QuoteResource
 	{
+		$validatedData = $request->validated();
+
 		if ($request->hasFile('image')) {
 			Storage::delete($quote->image);
 
-			$quote->image = config('app.url') . '/storage/' . $request->file('image')->store('images');
+			$validatedData['image'] = config('app.url') . '/storage/' . $request->file('image')->store('images');
 		}
 
-		$quote->setTranslations('title', [
-			'en' => $request->title_en,
-			'ka' => $request->title_ka,
-		]);
-
-		$quote->save();
+		$quote->update($validatedData);
 
 		return QuoteResource::make($quote);
 	}

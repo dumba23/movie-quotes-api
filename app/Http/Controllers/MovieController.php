@@ -37,48 +37,42 @@ class MovieController extends Controller
 	public function store(StoreMovieRequest $request, Movie $movie): MovieResource
 	{
 		$newMovie = DB::transaction(function () use ($movie, $request) {
-            $movie->image =  config('app.url') . '/storage/' . $request->file('image')->store('images');
-            $movie->user_id = auth()->id();
-            $movie->release_date = $request->release_date;
-            $movie->title = $request->title;
-            $movie->description = $request->description;
-            $movie->director = $request->director;
+			$movie = Movie::create($request->validated() + [
+				'image'   => config('app.url') . '/storage/' . $request->file('image')->store('images'),
+				'user_id' => auth()->id(),
+			]);
 
-            $movie->save();
+			$movie->genres()->attach($request->input('genreIds'));
 
-            $movie->genres()->attach($request->input('genreIds'));
-
-            return $movie;
-        });
+			return $movie;
+		});
 
 		return MovieResource::make($newMovie);
 	}
 
-    public function update(UpdateMovieRequest $request, Movie $movie): MovieResource
-    {
-        $updatedMovie =  DB::transaction(function () use ($request, $movie) {
-            if($request->hasFile('image')){
-                $movie->image =  config('app.url') . '/storage/' . $request->file('image')->store('images');
-            }
-            $movie->release_date = $request->release_date;
-            $movie->title = $request->title;
-            $movie->description = $request->description;
-            $movie->director = $request->director;
+	public function update(UpdateMovieRequest $request, Movie $movie): MovieResource
+	{
+		$updatedMovie = DB::transaction(function () use ($request, $movie) {
+			$validatedData = $request->validated();
 
-            $movie->save();
-            $movie->genres()->detach();
-            $movie->genres()->attach($request->input('genreIds'));
+			if ($request->hasFile('image')) {
+				$validatedData['image'] = config('app.url') . '/storage/' . $request->file('image')->store('images');
+			}
 
-            return $movie;
-        });
+			$movie->update($validatedData);
+			$movie->genres()->detach();
+			$movie->genres()->attach($request->input('genreIds'));
 
-        return MovieResource::make($updatedMovie);
-    }
+			return $movie;
+		});
+
+		return MovieResource::make($updatedMovie);
+	}
 
 	public function destroy(string $movieId): JsonResponse
 	{
-        $movie = Movie::findOrFail($movieId);
-        $movie->delete();
+		$movie = Movie::findOrFail($movieId);
+		$movie->delete();
 
 		return response()->json(['message' => 'Movie deleted successfully']);
 	}

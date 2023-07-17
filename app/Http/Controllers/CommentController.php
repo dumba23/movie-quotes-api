@@ -13,11 +13,12 @@ class CommentController extends Controller
 {
 	public function store(Request $request, Quote $quote): JsonResponse
 	{
-		$comment = new Comment();
-		$comment->content = $request->input('content');
+		$comment = Comment::create([
+			'content' => $request->input('content'),
+		]);
+
 		$comment->user()->associate(Auth::user());
 		$comment->quote()->associate($quote);
-		$comment->save();
 
 		broadcast(new NewCommentEvent($comment, Auth::user(), $quote));
 

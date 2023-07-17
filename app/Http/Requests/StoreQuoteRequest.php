@@ -6,6 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreQuoteRequest extends FormRequest
 {
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'title' => [
+                'en' => $this->title_en,
+                'ka' => $this->title_ka,
+            ],
+        ]);
+    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,8 +23,9 @@ class StoreQuoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title_en' => 'required|string|max:255',
-            'title_ka' => 'required|string|max:255',
+            'title' => 'required',
+            'title.en' => 'required|string|max:255',
+            'title.ka' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'movie_id' => 'required|exists:movies,id',
         ];
