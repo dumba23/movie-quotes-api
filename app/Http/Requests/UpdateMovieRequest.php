@@ -6,6 +6,24 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMovieRequest extends FormRequest
 {
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'title' => [
+                'en' => $this->title_en,
+                'ka' => $this->title_ka,
+            ],
+            'description' => [
+                'en' => $this->description_en,
+                'ka' => $this->description_ka,
+            ],
+            'director' => [
+                'en' => $this->director_en,
+                'ka' => $this->director_ka,
+            ],
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,16 +32,19 @@ class UpdateMovieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title_en' => 'required|string|max:255',
-            'title_ka' => 'required|string|max:255',
-            'release_date' => 'required|numeric',
-            'description_en' => 'required|string',
-            'description_ka' => 'required|string',
-            'director_en' => 'required|string|max:255',
-            'director_ka' => 'required|string|max:255',
+            'title' => 'required',
+            'title.en' => 'required|string|max:255',
+            'title.ka' => 'required|string|max:255',
+            'release_date' => 'required|string',
             'genreIds' => 'required|array',
             'genreIds.*' => 'exists:genres,id',
-            'image' => 'sometimes|image',
+            'description' => 'required',
+            'description.en' => 'required|string',
+            'description.ka' => 'required|string',
+            'director' => 'required',
+            'director.en' => 'required|string|max:255',
+            'director.ka' => 'required|string|max:255',
+            'image' => 'required|image',
         ];
     }
 }
