@@ -6,9 +6,9 @@ use App\Http\Requests\StoreMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
 use App\Http\Resources\MovieResource;
 use App\Models\Movie;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MovieController extends Controller
@@ -25,9 +25,9 @@ class MovieController extends Controller
 
 	public function get(Movie $movie): MovieResource | JsonResponse
 	{
-		$user = Auth::user();
-
-		if ($movie->user_id !== $user->id) {
+		try {
+			$this->authorize('get', $movie);
+		} catch (AuthorizationException) {
 			return response()->json(['Invalid request'], 403);
 		}
 
