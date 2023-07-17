@@ -32,7 +32,7 @@ class AuthController extends Controller
 	{
 		$login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-		$remember =$request->remember_token;
+		$remember = $request->remember_token;
 
 		$request->merge([$login_type => $request->input('login')]);
 

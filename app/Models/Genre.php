@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Genre extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    public $fillable = [
-        'name'
-    ];
+	public $fillable = [
+		'name',
+	];
 
-    public function movies(): BelongsToMany
-    {
-        return $this->belongsToMany(Movie::class, 'movie_genres', 'genre_id', 'movie_id');
-    }
+	public function movies(): BelongsToMany
+	{
+		return $this->belongsToMany(Movie::class, 'movie_genres', 'genre_id', 'movie_id');
+	}
 }
