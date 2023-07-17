@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Storage;
 
 class QuoteController extends Controller
 {
-	public function allQuotes(): AnonymousResourceCollection
+	public function index(): AnonymousResourceCollection
 	{
 		$quotes = Quote::with('movie.user')->orderBy('created_at', 'desc')->get();
 
 		return QuoteResource::collection($quotes);
 	}
 
-	public function index(): AnonymousResourceCollection
+	public function authorizedUserQuotes(): AnonymousResourceCollection
 	{
 		$userId = Auth::id();
 		$quotes = Quote::whereIn('movie_id', function ($query) use ($userId) {

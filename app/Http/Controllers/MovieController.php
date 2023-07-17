@@ -13,17 +13,17 @@ use Illuminate\Support\Facades\DB;
 
 class MovieController extends Controller
 {
-	public function allMovies(): AnonymousResourceCollection
+	public function index(): AnonymousResourceCollection
 	{
 		return MovieResource::collection(Movie::all());
 	}
 
-	public function index(): AnonymousResourceCollection
+	public function authorizedUserMovies(): AnonymousResourceCollection
 	{
 		return MovieResource::collection(auth()->user()->movies);
 	}
 
-	public function show(Movie $movie): MovieResource | JsonResponse
+	public function get(Movie $movie): MovieResource | JsonResponse
 	{
 		$user = Auth::user();
 

@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-	public function getNotifications(Request $request, Notification $notification): JsonResponse
+	public function index(Request $request, Notification $notification): JsonResponse
 	{
 		$perPage = $request->input('per_page', 5);
 		$currentPage = $request->input('page', 1);

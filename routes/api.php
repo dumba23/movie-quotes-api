@@ -4,7 +4,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -29,10 +29,13 @@ Route::middleware('localization')->group(function () {
 
 		return response()->json(['Language changed', app()->getLocale()]);
 	});
-	Route::post('/register', [AuthController::class, 'register'])->name('register');
-	Route::get('/register/verify/{token}', [EmailVerifyController::class, 'verify'])->name('verify.register');
 
-	Route::post('/login', [AuthController::class, 'login'])->name('login');
+	Route::controller(AuthController::class)->group(function () {
+		Route::post('/register', 'register')->name('register');
+		Route::post('/login', 'login')->name('login');
+	});
+
+	Route::get('/register/verify/{token}', [EmailVerifyController::class, 'verify'])->name('verify.register');
 
 	Route::prefix('/recovery')->group(function () {
 		Route::post('/', [PasswordRecoveryController::class, 'recover'])->name('check.recovery');
@@ -47,24 +50,39 @@ Route::middleware('localization')->group(function () {
 
 		Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-		Route::get('/user', [ProfileController::class, 'getUser'])->name('user');
-		Route::post('/user/edit', [ProfileController::class, 'editUser'])->name('update.user');
-		Route::patch('user/change/{old_email}/{decryptedEmail}', [ProfileController::class, 'changeEmail'])->name('change.user_email');
+		Route::controller(UserController::class)->group(function () {
+			Route::get('/user', 'get')->name('get.user');
+			Route::post('/user/edit', 'update')->name('update.user');
+			Route::patch('/user/change/{old_email}/{decryptedEmail}', 'changeEmail')->name('change.user_email');
+		});
 
-		Route::resource('movies', MovieController::class);
-		Route::get('all/movies', [MovieController::class, 'allMovies'])->name('all_movies');
+		Route::controller(MovieController::class)->group(function () {
+			Route::get('/movies', 'index')->name('index.movies');
+			Route::get('/movies/authorized', 'authorizedUserMovies')->name('authorized.movies');
+			Route::get('/movies/{movie}', 'get')->name('get.movies');
+			Route::post('/movies', 'store')->name('store.movies');
+			Route::put('/movies/{movie}', 'update')->name('update.movies');
+			Route::delete('/movies/{movie}', 'destroy')->name('destroy.movies');
+		});
 
-		Route::get('all/quotes', [QuoteController::class, 'allQuotes'])->name('all_quotes');
-		Route::resource('quotes', QuoteController::class);
-		Route::post('quotes/{quote}/like', [QuoteController::class, 'like'])->name('like_quote');
+		Route::controller(QuoteController::class)->group(function () {
+			Route::get('/quotes', 'index')->name('index.quotes');
+			Route::get('/quotes/authorized', 'authorizedUserQuotes')->name('authorized.quotes');
+			Route::get('/quotes/{quote}', 'get')->name('get.quotes');
+			Route::post('/quotes', 'store')->name('store.quotes');
+			Route::put('/quotes/{quote}', 'update')->name('update.quotes');
+			Route::post('/quotes/{quote}/like', 'like')->name('like.quote');
+			Route::delete('/quotes/{quote}', 'destroy')->name('destroy.quotes');
+		});
 
-		Route::post('quotes/{quote}/comments', [CommentController::class, 'store'])->name('store.quote_comment');
+		Route::post('/quotes/{quote}/comments', [CommentController::class, 'store'])->name('store.quote_comment');
 
-		Route::get('notification', [NotificationController::class, 'getNotifications'])->name('get_notification');
-		Route::post('notification', [NotificationController::class, 'store'])->name('store.notification');
-
-		Route::patch('notification/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark_all_read');
-		Route::put('/notifications/mark-selected-as-read', [NotificationController::class, 'markSelectedAsRead']);
+		Route::controller(NotificationController::class)->group(function () {
+			Route::get('/notifications', 'index')->name('index.notifications');
+			Route::post('/notifications', 'store')->name('store.notifications');
+			Route::patch('/notifications/mark-all-as-read', 'markAllAsRead')->name('mark_all_as_read');
+			Route::put('/notifications/mark-selected-as-read', 'markSelectedAsRead')->name('mark_selected_as_read');
+		});
 
 		Route::get('/genres', [GenreController::class, 'index'])->name('genres');
 	});
