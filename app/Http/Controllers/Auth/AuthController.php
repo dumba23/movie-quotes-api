@@ -34,7 +34,7 @@ class AuthController extends Controller
 
 		$remember = $request->remember_token;
 
-		$request->merge([$login_type => $request->input('login')]);
+		$request->merge([$login_type => $request->login]);
 
 		$user = User::where($login_type, $request->$login_type)->first();
 

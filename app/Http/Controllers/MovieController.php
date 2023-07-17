@@ -42,7 +42,7 @@ class MovieController extends Controller
 				'user_id' => auth()->id(),
 			]);
 
-			$movie->genres()->attach($request->input('genreIds'));
+			$movie->genres()->attach($request->genreIds);
 
 			return $movie;
 		});
@@ -61,7 +61,7 @@ class MovieController extends Controller
 
 			$movie->update($validatedData);
 			$movie->genres()->detach();
-			$movie->genres()->attach($request->input('genreIds'));
+			$movie->genres()->attach($request->genreIds);
 
 			return $movie;
 		});

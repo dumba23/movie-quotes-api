@@ -42,7 +42,7 @@ class NotificationController extends Controller
 	public function markSelectedAsRead(MarkSelectedAsReadRequest $request): JsonResponse
 	{
 		$user = Auth::user();
-		$notificationIds = $request->input('id', []);
+		$notificationIds = $request->id;
 
 		$user->notifications()
 			->whereIn('id', $notificationIds)
@@ -62,9 +62,9 @@ class NotificationController extends Controller
 
 	public function store(StoreNotificationRequest $request): JsonResponse
 	{
-		$quote = Quote::findOrFail($request->input('quote_id'));
+		$quote = Quote::findOrFail($request->quote_id);
 
-		if ($quote->movie->user->id === $request->input('sender_id')) {
+		if ($quote->movie->user->id === $request->sender_id) {
 			return response()->json(['message' => 'Nothing to store']);
 		}
 
