@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EditUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Mail\MailChange;
 use App\Models\User;
@@ -21,21 +21,21 @@ class UserController extends Controller
 		return UserResource::make(Auth::user());
 	}
 
-	public function update(EditUserRequest $request): JsonResponse
+	public function update(UpdateUserRequest $request): JsonResponse
 	{
 		$user = User::where('email', $request->old_email)->first();
 
 		if (isset($request->email)) {
 			if ($request->email === $request->old_email) {
 				$user->update([
-					'username' => $request->validated('username'),
-					'email'    => $request->validated('email'),
-					'password' => $request->validated('password'),
+					'username' => $request->username,
+					'email'    => $request->email,
+					'password' => $request->password,
 				]);
 			} else {
 				$user->update([
-					'username' => $request->validated('username'),
-					'password' => $request->validated('password'),
+					'username' => $request->username,
+					'password' => $request->password,
 				]);
 
 				$encryptedEmail = Crypt::encryptString($user->email);
@@ -57,7 +57,7 @@ class UserController extends Controller
 		return response()->json('User updated successfully');
 	}
 
-	public function changeEmail(string $oldEmail, string $decryptedEmail): RedirectResponse | JsonResponse
+	public function updateEmail(string $oldEmail, string $decryptedEmail): RedirectResponse | JsonResponse
 	{
 		$user = User::where('email', $oldEmail)->first();
 

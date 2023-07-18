@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
@@ -16,7 +17,7 @@ class MailConfirm extends Mailable
 	/**
 	 * Create a new message instance.
 	 */
-	public function __construct(public $user)
+	public function __construct(public User $user)
 	{
 	}
 

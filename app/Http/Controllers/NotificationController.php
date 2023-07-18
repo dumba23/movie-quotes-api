@@ -42,7 +42,7 @@ class NotificationController extends Controller
 	public function markSelectedAsRead(MarkSelectedAsReadRequest $request): JsonResponse
 	{
 		$user = Auth::user();
-		$notificationIds = $request->id;
+		$notificationIds = $request->ids;
 
 		$user->notifications()
 			->whereIn('id', $notificationIds)

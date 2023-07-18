@@ -14,8 +14,8 @@ class MarkSelectedAsReadRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'id'   => 'required|array',
-			'id.*' => 'exists:notifications,id',
+			'ids'   => 'required|array',
+			'ids.*' => 'exists:notifications,id',
 		];
 	}
 }

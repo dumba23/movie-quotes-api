@@ -37,10 +37,10 @@ Route::middleware('localization')->group(function () {
 
 	Route::get('/register/verify/{token}', [EmailVerifyController::class, 'verify'])->name('verify.register');
 
-	Route::prefix('/recovery')->group(function () {
-		Route::post('/', [PasswordRecoveryController::class, 'recover'])->name('check.recovery');
-		Route::get('/validate', [PasswordRecoveryController::class, 'handleTokenExpiration'])->name('validate.recovery');
-		Route::patch('/password/{token}', [PasswordRecoveryController::class, 'updatePassword'])->name('update.recovery');
+	Route::controller(PasswordRecoveryController::class)->group(function () {
+		Route::post('/recovery', 'recover')->name('check.recovery');
+		Route::get('/recovery/validate', 'handleTokenExpiration')->name('validate.recovery');
+		Route::patch('/recovery/password/{token}', 'updatePassword')->name('update.recovery');
 	});
 
 	Route::middleware('auth:sanctum')->group(function () {
@@ -51,9 +51,9 @@ Route::middleware('localization')->group(function () {
 		Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 		Route::controller(UserController::class)->group(function () {
-			Route::get('/user', 'get')->name('get.user');
-			Route::post('/user/edit', 'update')->name('update.user');
-			Route::patch('/user/change/{old_email}/{decryptedEmail}', 'changeEmail')->name('change.user_email');
+			Route::get('/users', 'get')->name('get.users');
+			Route::post('/users/edit', 'update')->name('update.users');
+			Route::patch('/users/change/{old_email}/{decryptedEmail}', 'updateEmail')->name('update.users_email');
 		});
 
 		Route::controller(MovieController::class)->group(function () {
