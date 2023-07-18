@@ -14,20 +14,11 @@ class NewLikeEvent implements ShouldBroadcast
 {
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
-	public Quote $quote;
-
-	public User $user;
-
-	public bool $like;
-
 	/**
 	 * Create a new event instance.
 	 */
-	public function __construct(Quote $quote, User $user, $like)
+	public function __construct(public Quote $quote, public User $user, public bool $like)
 	{
-		$this->quote = $quote;
-		$this->user = $user;
-		$this->like = $like;
 	}
 
 	/**

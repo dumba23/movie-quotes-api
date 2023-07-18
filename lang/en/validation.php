@@ -151,6 +151,7 @@ return [
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
     'credentials' => 'Provided credentials does not match with our records',
+    'email_not_confirmed' => 'Email is not confirmed yet',
 
     /*
     |--------------------------------------------------------------------------

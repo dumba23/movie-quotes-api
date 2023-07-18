@@ -23,8 +23,6 @@ class AuthController extends Controller
 			'email_verify_token' => $email_verify_token,
 		]);
 
-		$user->save();
-
 		Mail::to($user->email)->send(new MailConfirm($user));
 
 		return response()->json(['success' => true, 'token' => $email_verify_token], 201);
@@ -34,19 +32,15 @@ class AuthController extends Controller
 	{
 		$login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-		$remember = (bool)$request->validated('remember_token');
+		$remember = $request->remember_token;
 
-		$request->merge([$login_type => $request->input('login')]);
+		$request->merge([$login_type => $request->login]);
 
 		$user = User::where($login_type, $request->$login_type)->first();
 
 		if ($user && $user->email_verified_at == null) {
 			return response()->json([
-				'status'  => false,
-				'message' => [
-					'en' => 'Email is not confirmed yet',
-					'ka' => 'თქვენი ანგარიში არ არის ვერიფიცირებული',
-				],
+				'message' => __('validation.email_not_confirmed'),
 			], 401);
 		}
 

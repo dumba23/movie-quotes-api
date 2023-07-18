@@ -15,20 +15,11 @@ class NewCommentEvent implements ShouldBroadcast
 {
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
-	public Comment $comment;
-
-	public User $user;
-
-	public Quote $quote;
-
 	/**
 	 * Create a new event instance.
 	 */
-	public function __construct(Comment $comment, User $user, Quote $quote)
+	public function __construct(public Comment $comment, public User $user, public Quote $quote)
 	{
-		$this->comment = $comment;
-		$this->user = $user;
-		$this->quote = $quote;
 	}
 
 	/**

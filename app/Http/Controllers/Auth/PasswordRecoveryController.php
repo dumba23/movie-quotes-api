@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
-class RecoveryController extends Controller
+class PasswordRecoveryController extends Controller
 {
 	public function recover(RecoverPasswordRequest $request): JsonResponse
 	{
