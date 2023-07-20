@@ -48,7 +48,7 @@ class UserController extends Controller
 			$validatedData = $request->validated();
 			unset($validatedData['avatar']);
 			$user->update($validatedData + [
-				'avatar' => $request->file('avatar')->store('avatars'),
+				'avatar' => '/storage/' . $request->file('avatar')->store('avatars'),
 			]);
 		} else {
 			$user->update($request->validated());

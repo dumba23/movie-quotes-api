@@ -32,15 +32,17 @@ class QuoteController extends Controller
 		return QuoteResource::collection($quotes);
 	}
 
-	public function show(Quote $quote): QuoteResource
+	public function get(Quote $quote): QuoteResource
 	{
 		return QuoteResource::make($quote);
 	}
 
 	public function store(StoreQuoteRequest $request): QuoteResource
 	{
-		$quote = Quote::create($request->validated() + [
-			'image' => config('app.url') . '/storage/' . $request->file('image')->store('images'),
+		$quote = Quote::create([
+			'title'    => $request->title,
+			'movie_id' => $request->movie_id,
+			'image'    => config('app.url') . '/storage/' . $request->file('image')->store('images'),
 		]);
 
 		return QuoteResource::make($quote);
@@ -75,9 +77,9 @@ class QuoteController extends Controller
 		$toggle = $quote->likes()->toggle($user->id);
 
 		if ($toggle['attached']) {
-			broadcast(new NewLikeEvent($quote, $user, true));
+			broadcast(new NewLikeEvent($quote, $user, true))->toOthers();
 		} else {
-			broadcast(new NewLikeEvent($quote, $user, false));
+			broadcast(new NewLikeEvent($quote, $user, false))->toOthers();
 			Notification::where('user_id', $user->id)
 				->where('quote_id', $quote->id)
 				->delete();
