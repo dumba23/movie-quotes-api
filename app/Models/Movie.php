@@ -18,14 +18,12 @@ class Movie extends Model
 	public array $translatable = ['title', 'description', 'director'];
 
 	protected $fillable = [
-		'title_en',
-		'title_ka',
-		'description_en',
-		'description_ka',
-		'director_en',
-		'director_ka',
+		'title',
+		'description',
+		'director',
 		'image',
 		'release_date',
+		'user_id',
 	];
 
 	public function genres(): BelongsToMany

@@ -16,8 +16,7 @@ class Quote extends Model
 	use HasTranslations;
 
 	protected $fillable = [
-		'title_en',
-		'title_ka',
+		'title',
 		'image',
 		'movie_id',
 	];
