@@ -13,7 +13,7 @@ class UpdateMovieRequest extends FormRequest
 				'en' => $this->title_en,
 				'ka' => $this->title_ka,
 			],
-			'description' => [
+			'description'=> [
 				'en' => $this->description_en,
 				'ka' => $this->description_ka,
 			],
@@ -44,7 +44,7 @@ class UpdateMovieRequest extends FormRequest
 			'director'       => 'required',
 			'director.en'    => 'required|string|max:255',
 			'director.ka'    => 'required|string|max:255',
-			'image'          => 'required|image',
+			'image'          => 'sometimes|image',
 		];
 	}
 }
