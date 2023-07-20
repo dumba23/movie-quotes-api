@@ -21,7 +21,7 @@ class CommentController extends Controller
 		$comment->user()->associate(Auth::user());
 		$comment->quote()->associate($quote);
 
-		broadcast(new NewCommentEvent($comment, Auth::user(), $quote))->toOthers();
+		broadcast(new NewCommentEvent($comment, Auth::user(), $quote));
 
 		return response()->json(['message' => 'Comment created successfully', 'comment' => $comment], 201);
 	}

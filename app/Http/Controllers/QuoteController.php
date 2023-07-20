@@ -77,9 +77,9 @@ class QuoteController extends Controller
 		$toggle = $quote->likes()->toggle($user->id);
 
 		if ($toggle['attached']) {
-			broadcast(new NewLikeEvent($quote, $user, true))->toOthers();
+			broadcast(new NewLikeEvent($quote, $user, true));
 		} else {
-			broadcast(new NewLikeEvent($quote, $user, false))->toOthers();
+			broadcast(new NewLikeEvent($quote, $user, false));
 			Notification::where('user_id', $user->id)
 				->where('quote_id', $quote->id)
 				->delete();
