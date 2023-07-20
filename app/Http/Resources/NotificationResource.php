@@ -22,6 +22,7 @@ class NotificationResource extends JsonResource
 			'type'           => $this->type,
 			'message'        => $this->message,
 			'read'           => $this->read,
+			'sender'         => $this->sender,
 		];
 	}
 }
