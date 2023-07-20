@@ -32,8 +32,11 @@ class MovieController extends Controller
 	public function store(StoreMovieRequest $request, Movie $movie): MovieResource
 	{
 		$newMovie = DB::transaction(function () use ($movie, $request) {
-			$movie = Movie::create($request->validated() + [
-				'image'   => config('app.url') . '/storage/' . $request->file('image')->store('images'),
+			$validatedData = $request->validated();
+
+			$validatedData['image'] = config('app.url') . '/storage/' . $request->file('image')->store('images');
+
+			$movie = Movie::create($validatedData + [
 				'user_id' => auth()->id(),
 			]);
 
